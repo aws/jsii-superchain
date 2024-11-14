@@ -1,7 +1,9 @@
-# Superchain
+# jsii Superchain
 
 A [`debian`][debian]-based Docker image bundling all the SDKs and tools
 required in order to package [jsii] projects in all supported languages.
+
+View on [Amazon ECR Public Gallery](https://gallery.ecr.aws/jsii/superchain) or [Docker Hub](https://hub.docker.com/r/jsii/superchain/tags).
 
 [debian]: https://gallery.ecr.aws/debian/debian
 [jsii]: https://github.com/aws/jsii
