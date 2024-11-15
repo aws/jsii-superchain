@@ -40,7 +40,7 @@ ARG DEBIAN_VERSION="bookworm"
 
 # We require a couple of tools to be available in order to work here...
 RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main"                                            \
-  > "/etc/apt/sources.list.d/${DEBIAN_VERSION}-backports.list"                                                        \
+  > "/etc/apt/sources.list.d/${DEBIAN_VERSION}-backports.list"                                                          \
   && apt-get update                                                                                                     \
   && apt-get install -y gpg tar zsh                                                                                     \
   # We need a "recent" (>= 7.71) version of curl for --retry-all-errors, so we get it from backports...
@@ -54,11 +54,11 @@ ARG M2_VERSION="3.9.4"
 ENV M2_DISTRO="https://downloads.apache.org/maven/maven-3"
 RUN set -eo pipefail                                                                                                    \
   && curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz"                             \
-  -o /tmp/apache-maven.tar.gz                                                                                         \
+  -o /tmp/apache-maven.tar.gz                                                                                           \
   && curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz.asc"                         \
-  -o /tmp/apache-maven.tar.gz.asc                                                                                     \
+  -o /tmp/apache-maven.tar.gz.asc                                                                                       \
   && mkdir -p /tmp/gpg-maven && chmod go-rwx /tmp/gpg-maven                                                             \
-  && curl -fSsL "https://downloads.apache.org/maven/KEYS" | gpg --homedir /tmp/gpg-maven --import                        \
+  && curl -fSsL "https://downloads.apache.org/maven/KEYS" | gpg --homedir /tmp/gpg-maven --import                       \
   && gpg --homedir /tmp/gpg-maven --verify /tmp/apache-maven.tar.gz.asc /tmp/apache-maven.tar.gz                        \
   && mkdir -p /opt/apache/maven                                                                                         \
   && tar xzf /tmp/apache-maven.tar.gz -C /opt/apache/maven --strip-components=1
@@ -75,11 +75,11 @@ RUN DOTNET_VERSION=$(curl -fSsL "${DOTNET_FEED}/Sdk/${DOTNET_CHANNEL}/latest.ver
 # Prepare PowerShell LTS distribution
 ENV POWERSHELL_RELEASES="https://github.com/PowerShell/PowerShell/releases"
 RUN POWERSHELL_RELEASE=$(curl -X GET -fSsIL "https://aka.ms/powershell-release?tag=lts" -o /dev/null                    \
-  --retry 5 --retry-all-errors -w %{url_effective})                                                                   \
+  --retry 5 --retry-all-errors -w %{url_effective})                                                                     \
   && POWERSHELL_VERSION=${POWERSHELL_RELEASE#${POWERSHELL_RELEASES}/tag/v}                                              \
   && ASSET="powershell-${POWERSHELL_VERSION}-linux-${${TARGETPLATFORM#linux/}/amd64/x64}.tar.gz"                        \
   && curl -fSsL "${POWERSHELL_RELEASES}/download/v${POWERSHELL_VERSION}/${ASSET}" --retry 5 --retry-all-errors          \
-  -o /tmp/powershell.tar.gz                                                                                           \
+  -o /tmp/powershell.tar.gz                                                                                             \
   && mkdir -p /opt/microsoft/powershell                                                                                 \
   && tar zxf /tmp/powershell.tar.gz -C /opt/microsoft/powershell                                                        \
   && chmod +x /opt/microsoft/powershell/pwsh
@@ -125,32 +125,32 @@ ENV LANG="C.UTF-8"                                                              
 RUN apt-get update                                                                                                      \
   && apt-get -y upgrade                                                                                                 \
   && apt-get -y install --no-install-recommends                                                                         \
-  apt-transport-https                                                                                                 \
-  build-essential                                                                                                     \
-  ca-certificates                                                                                                     \
-  curl                                                                                                                \
-  dirmngr                                                                                                             \
-  git                                                                                                                 \
-  gnupg                                                                                                               \
-  gzip                                                                                                                \
-  libffi-dev                                                                                                          \
-  libicu-dev                                                                                                          \
-  libssl-dev                                                                                                          \
-  openssh-client                                                                                                      \
-  openssl                                                                                                             \
-  rsync                                                                                                               \
-  sudo                                                                                                                \
-  unzip                                                                                                               \
-  zip                                                                                                                 \
-  acl                                                                                                                 \
+  apt-transport-https                                                                                                   \
+  build-essential                                                                                                       \
+  ca-certificates                                                                                                       \
+  curl                                                                                                                  \
+  dirmngr                                                                                                               \
+  git                                                                                                                   \
+  gnupg                                                                                                                 \
+  gzip                                                                                                                  \
+  libffi-dev                                                                                                            \
+  libicu-dev                                                                                                            \
+  libssl-dev                                                                                                            \
+  openssh-client                                                                                                        \
+  openssl                                                                                                               \
+  rsync                                                                                                                 \
+  sudo                                                                                                                  \
+  unzip                                                                                                                 \
+  zip                                                                                                                   \
+  acl                                                                                                                   \
   && rm -rf /var/lib/apt/lists/*
 
 # Install mono
-COPY superchain/gpg/mono.asc /tmp/mono.asc
+COPY gpg/mono.asc /tmp/mono.asc
 RUN apt-key add /tmp/mono.asc && rm /tmp/mono.asc                                                                       \
   # Mono only provides a Debian Buster (10) distribution point, but it works with subsequent debians, too...
   && echo "deb https://download.mono-project.com/repo/debian stable-buster main"                                        \
-  > /etc/apt/sources.list.d/mono-official-stable.list                                                                 \
+  > /etc/apt/sources.list.d/mono-official-stable.list                                                                   \
   && apt-get update                                                                                                     \
   && apt-get -y install mono-devel                                                                                      \
   && rm -rf /var/lib/apt/lists/*
@@ -190,7 +190,7 @@ RUN curl "${AWS_CLI_V2_URL}" -o "/tmp/awscliv2.zip"                             
 
 
 # Install JDK8 (Amazon Corretto 8)
-COPY superchain/gpg/corretto.asc /tmp/corretto.asc
+COPY gpg/corretto.asc /tmp/corretto.asc
 RUN apt-key add /tmp/corretto.asc && rm /tmp/corretto.asc                                                               \
   && echo "deb https://apt.corretto.aws stable main" > /etc/apt/sources.list.d/amazon-corretto.list                     \
   && apt-get update                                                                                                     \
@@ -200,7 +200,7 @@ RUN apt-key add /tmp/corretto.asc && rm /tmp/corretto.asc                       
   && rm -rf /var/lib/apt/lists/*
 
 # Install Docker
-COPY superchain/gpg/docker.asc /tmp/docker.asc
+COPY gpg/docker.asc /tmp/docker.asc
 RUN apt-key add /tmp/docker.asc && rm /tmp/docker.asc                                                                   \
   && echo "deb https://download.docker.com/linux/debian ${DEBIAN_VERSION} stable" > /etc/apt/sources.list.d/docker.list \
   && apt-get update                                                                                                     \
@@ -213,7 +213,7 @@ ARG GITHUB_CLI_VERSION="1.13.1"
 RUN BASE="https://github.com/cli/cli/releases/download"                                                                 \
   && echo "${BASE}/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_${TARGETPLATFORM#linux/}.deb"                  \
   && curl -fSsL "${BASE}/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_${TARGETPLATFORM#linux/}.deb"            \
-  -o /tmp/gh.deb                                                                                                      \
+  -o /tmp/gh.deb                                                                                                        \
   && apt-get update                                                                                                     \
   && apt-get -y install /tmp/gh.deb                                                                                     \
   && rm /tmp/gh.deb                                                                                                     \
@@ -227,7 +227,7 @@ RUN ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh
 
 # Install Maven
 COPY --from=bindist /opt/apache/maven ${M2_HOME}
-COPY superchain/m2-settings.xml /root/.m2/settings.xml
+COPY m2-settings.xml /root/.m2/settings.xml
 
 # Install Go
 COPY --from=bindist /opt/golang/go ${GOROOT}
@@ -236,8 +236,8 @@ COPY --from=bindist /opt/golang/go ${GOROOT}
 # (Put this as late as possible in the Dockerfile so we get to reuse the layer cache
 # for most of the multiple builds).
 ARG NODE_MAJOR_VERSION="18"
-COPY superchain/gpg/nodesource.asc /tmp/nodesource.asc
-COPY superchain/gpg/yarn.asc /tmp/yarn.asc
+COPY gpg/nodesource.asc /tmp/nodesource.asc
+COPY gpg/yarn.asc /tmp/yarn.asc
 RUN apt-key add /tmp/nodesource.asc && rm /tmp/nodesource.asc                                                           \
   && echo "deb https://deb.nodesource.com/node_${NODE_MAJOR_VERSION}.x nodistro main"                                   \
   > /etc/apt/sources.list.d/nodesource.list                                                                             \
@@ -256,15 +256,15 @@ RUN apt-key add /tmp/nodesource.asc && rm /tmp/nodesource.asc                   
 RUN apt-get update                                                                                                      \
   && apt-get -y install --no-install-recommends curl                                                                    \
   && curl -fSsL "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_${TARGETPLATFORM#linux/}/amazon-ssm-agent.deb"\
-  -o /tmp/amazon-ssm-agent.deb                                                                                        \
+  -o /tmp/amazon-ssm-agent.deb                                                                                          \
   && dpkg -i /tmp/amazon-ssm-agent.deb                                                                                  \
   && systemctl enable amazon-ssm-agent                                                                                  \
   && rm -rf /var/lib/apt/lists/*
-COPY --chown=superchain:superchain superchain/amazon-ssm-agent.json /etc/amazon/ssm/amazon-ssm-agent.json
+COPY --chown=superchain:superchain amazon-ssm-agent.json /etc/amazon/ssm/amazon-ssm-agent.json
 
 
 # Install some configuration
-COPY superchain/ssh_config /root/.ssh/config
+COPY ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
 
 # Create the image's non-root user, and enable no-password sudo
@@ -273,8 +273,8 @@ RUN groupadd --gid 1001 superchain                                              
   && echo "%sudo ALL = (ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/nopasswd                                              \
   && echo "superchain ALL = (ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/nopasswd                                         \
   && chmod 0440 /etc/sudoers.d/nopasswd
-COPY --chown=superchain:superchain superchain/m2-settings.xml /home/superchain/.m2/settings.xml
-COPY --chown=superchain:superchain superchain/ssh_config /home/superchain/.ssh/config
+COPY --chown=superchain:superchain m2-settings.xml /home/superchain/.m2/settings.xml
+COPY --chown=superchain:superchain ssh_config /home/superchain/.ssh/config
 RUN chmod 600 /home/superchain/.ssh/config
 
 # Create the attributions document
@@ -378,7 +378,7 @@ RUN RUST_DOCS="${RUSTUP_HOME}/toolchains/$(rustup show active-toolchain | cut -d
 
 # Add the source used to build this Docker image (to facilitate re-builds, forensics)
 # Keep this at the end for max caching.
-COPY superchain /docker-source
+COPY . /docker-source
 
 CMD ["/bin/bash"]
 

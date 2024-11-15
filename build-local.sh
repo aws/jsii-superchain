@@ -36,5 +36,5 @@ ${DOCKER:-docker} build                                                         
   --build-arg REGISTRY="docker.io/library"                                      \
   --build-arg COMMIT_ID=${COMMIT_ID}                                            \
   -t "public.ecr.aws/jsii/superchain:1-${DEBIAN_VERSION:-bookworm}-local"       \
-  -f ${PWD}/Dockerfile                                                          \
-  ..
+  -f superchain/Dockerfile                                                      \
+  superchain
