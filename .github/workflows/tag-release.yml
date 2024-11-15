@@ -1,5 +1,5 @@
 name: tag-release
-run-name: Tag Release build
+run-name: Tag Release
 on:
   # release at least once a month weekly
   schedule:

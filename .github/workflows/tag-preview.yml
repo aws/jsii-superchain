@@ -1,5 +1,5 @@
 name: tag-preview
-run-name: Tag Preview build
+run-name: Tag Preview
 on:
   # release a preview weekly
   schedule:
