@@ -181,7 +181,7 @@ jobs:
               --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"     \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-nightly"                                               \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"                        \
-              -f Dockerfile                                                                                  \
+              -f Dockerfile                                                                                             \
               .
           else
             docker buildx build                                                                                         \
@@ -195,7 +195,7 @@ jobs:
               --build-arg NODE_MAJOR_VERSION=${{ matrix.node }}                                                         \
               --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"     \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"                        \
-              -f Dockerfile                                                                                  \
+              -f Dockerfile                                                                                             \
               .
           fi
 
@@ -228,7 +228,7 @@ jobs:
               --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"             \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim"                                                       \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"                                \
-              -f Dockerfile                                                                                  \
+              -f Dockerfile                                                                                             \
               .
           else
             docker buildx build                                                                                         \
@@ -242,7 +242,7 @@ jobs:
               --build-arg NODE_MAJOR_VERSION=${{ matrix.node }}                                                         \
               --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"             \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"                                \
-              -f Dockerfile                                                                                  \
+              -f Dockerfile                                                                                             \
               .
           fi
 
