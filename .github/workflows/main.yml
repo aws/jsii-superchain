@@ -177,8 +177,8 @@ jobs:
               --build-arg COMMIT_ID='${{ github.sha }}'                                                                 \
               --build-arg DEBIAN_VERSION=${{ matrix.debian }}                                                           \
               --build-arg NODE_MAJOR_VERSION=${{ matrix.node }}                                                         \
-              --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-nightly"                            \
-              --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"     \
+              --tag "${{ vars.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-nightly"                            \
+              --tag "${{ vars.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"     \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-nightly"                                               \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"                        \
               -f Dockerfile                                                                                             \
@@ -193,7 +193,7 @@ jobs:
               --build-arg COMMIT_ID='${{ github.sha }}'                                                                 \
               --build-arg DEBIAN_VERSION=${{ matrix.debian }}                                                           \
               --build-arg NODE_MAJOR_VERSION=${{ matrix.node }}                                                         \
-              --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"     \
+              --tag "${{ vars.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"     \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-node${{ matrix.node }}-nightly"                        \
               -f Dockerfile                                                                                             \
               .
@@ -224,8 +224,8 @@ jobs:
               --build-arg COMMIT_ID='${{ github.sha }}'                                                                 \
               --build-arg DEBIAN_VERSION=${{ matrix.debian }}                                                           \
               --build-arg NODE_MAJOR_VERSION=${{ matrix.node }}                                                         \
-              --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim"                                    \
-              --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"             \
+              --tag "${{ vars.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim"                                    \
+              --tag "${{ vars.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"             \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim"                                                       \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"                                \
               -f Dockerfile                                                                                             \
@@ -240,7 +240,7 @@ jobs:
               --build-arg COMMIT_ID='${{ github.sha }}'                                                                 \
               --build-arg DEBIAN_VERSION=${{ matrix.debian }}                                                           \
               --build-arg NODE_MAJOR_VERSION=${{ matrix.node }}                                                         \
-              --tag "${{ secrets.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"             \
+              --tag "${{ vars.ECR_PUBLIC_REGISTRY }}:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"             \
               --tag "jsii/superchain:1-${{ matrix.debian }}-slim-node${{ matrix.node }}"                                \
               -f Dockerfile                                                                                             \
               .
