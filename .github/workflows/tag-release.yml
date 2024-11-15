@@ -1,0 +1,21 @@
+name: tag-release
+run-name: Tag Release
+on:
+  # release at least once a month weekly
+  schedule:
+    - cron: 0 12 15 * *
+  # or manually as needed
+  workflow_dispatch: {}
+jobs:
+  tag-release:
+    name: Tag Release
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Tag Preview Release
+        env:
+          GH_TOKEN: ${{ secrets.PROJEN_GITHUB_TOKEN }}
+        run: |-
+          TAG=$(date "+v%Y-%m-%d")
+          PREVIOUS=$(gh release ls --exclude-pre-releases --exclude-drafts --order=desc --limit=1 --json=tagName --jq=".[0].tagName")
+          gh release create $TAG --target ${{ github.sha }} --latest --generate-notes --notes-start-tag=$PREVIOUS

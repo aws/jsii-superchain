@@ -50,17 +50,16 @@ Any other tags should be *considered* deprecated or in the case of `nightly` ima
 
 ## Building
 
-This docker image must be built from the package root with the Dockerfile set to
-`superchain/Dockerfile`:
+This docker image can be build locally:
 
 ```console
-docker build . -f superchain/Dockerfile -t jsii/superchain:local
+docker build ./superchain -t jsii/superchain:local
 ```
 
 In case the tests fail, skip the tests and inspect the image manually:
 
 ```console
-docker build . -f superchain/Dockerfile -t jsii/superchain:local --target=superchain
+docker build ./superchain -t jsii/superchain:local --target=superchain
 ```
 
 ### NodeJS and NPM
@@ -107,7 +106,7 @@ A complete list can be viewed on the [Debian website](https://wiki.debian.org/Py
 
 ## Included Tools & Utilities
 
-The following tools & utilities are available for your convinience.
+The following tools & utilities are available for your convenience.
 Versions are generally the latest available for the respective Debian distribution.
 
 | Tool / Utility  | Version                    |
@@ -124,6 +123,17 @@ Versions are generally the latest available for the respective Debian distributi
 | `zip` & `unzip` | `>= 6.0-19`                |
 | `gh`            | `>= 1.13.1`                |
 | `sam`           | `>= 1.102.0`               |
+
+## Releasing
+
+Changes are not automatically released.
+Instead a new preview images `public.ecr.aws/jsii/superchain:1-bullseye-slim-nightly` is released weekly.
+
+A full release (the `public.ecr.aws/jsii/superchain:1-bullseye-slim` images) is done monthly, or whenever a new release is cut manually.
+
+The latest release information (for both of the container image tags) can be seen on the [Amazon ECR Public Gallery](https://gallery.ecr.aws/jsii/superchain).
+
+To manually kick-off a full or preview release, start the [Tag Preview](https://github.com/aws/jsii-superchain/actions/workflows/tag-preview.yml) or [Tag Release](https://github.com/aws/jsii-superchain/actions/workflows/tag-release.yml) workflow respectively.
 
 ## License
 
