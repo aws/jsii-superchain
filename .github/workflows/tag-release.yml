@@ -15,6 +15,7 @@ jobs:
       - name: Tag Preview Release
         env:
           GH_TOKEN: ${{ secrets.PROJEN_GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |-
           TAG=$(date "+v%Y-%m-%d")
           PREVIOUS=$(gh release ls --exclude-pre-releases --exclude-drafts --order=desc --limit=1 --json=tagName --jq=".[0].tagName")
