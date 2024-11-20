@@ -13,6 +13,7 @@ jobs:
   validate:
     name: Validate PR Title
     runs-on: ubuntu-latest
+    if: (github.event_name == 'pull_request' || github.event_name == 'pull_request_target')
     permissions:
       pull-requests: write
     steps:
