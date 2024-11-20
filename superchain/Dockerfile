@@ -255,7 +255,7 @@ RUN apt-key add /tmp/nodesource.asc && rm /tmp/nodesource.asc                   
 # Install Amazon SSM agent (allows debugging of builds via `codebuild-breakpoint`, https://go.aws/3TVW7vL)
 RUN apt-get update                                                                                                      \
   && apt-get -y install --no-install-recommends curl                                                                    \
-  && curl -fSsL "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_${TARGETPLATFORM#linux/}/amazon-ssm-agent.deb"\
+  && curl -fSsL "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_${TARGETPLATFORM#linux/}/amazon-ssm-agent.deb" \
   -o /tmp/amazon-ssm-agent.deb                                                                                          \
   && dpkg -i /tmp/amazon-ssm-agent.deb                                                                                  \
   && systemctl enable amazon-ssm-agent                                                                                  \
@@ -417,8 +417,8 @@ ARG COMMIT_ID
 LABEL org.opencontainers.image.created=${BUILD_TIMESTAMP}                                                               \
   org.opencontainers.image.title="jsii/superchain"                                                                      \
   org.opencontainers.image.description="An image to build cross-language artifacts with AWS jsii"                       \
-  org.opencontainers.image.url="https://github.com/aws/jsii/tree/main/superchain"                                       \
-  org.opencontainers.image.source="https://github.com/aws/jsii.git"                                                     \
+  org.opencontainers.image.url="https://github.com/aws/jsii-superchain"                                                 \
+  org.opencontainers.image.source="https://github.com/aws/jsii-superchain.git"                                          \
   org.opencontainers.image.revision=$COMMIT_ID                                                                          \
   org.opencontainers.image.authors="Amazon Web Services (https://aws.amazon.com)"
 
