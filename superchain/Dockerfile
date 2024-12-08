@@ -190,7 +190,7 @@ RUN curl "${AWS_CLI_V2_URL}" -o "/tmp/awscliv2.zip"                             
 
 
 # Install JDK8 (Amazon Corretto 8)
-COPY gpg/corretto.asc /tmp/corretto.asc
+RUN curl -o /tmp/corretto.asc https://apt.corretto.aws/corretto.key
 RUN apt-key add /tmp/corretto.asc && rm /tmp/corretto.asc                                                               \
   && echo "deb https://apt.corretto.aws stable main" > /etc/apt/sources.list.d/amazon-corretto.list                     \
   && apt-get update                                                                                                     \
@@ -244,7 +244,7 @@ RUN apt-key add /tmp/nodesource.asc && rm /tmp/nodesource.asc                   
   # Increase priority of the nodesource package
   && echo "Package: nodejs" > /etc/apt/preferences.d/nodejs                                                             \
   && echo 'Pin: origin deb.nodesource.com"' >> /etc/apt/preferences.d/nodejs                                            \
-  && echo "Pin-Priority: 600" >> /etc/apt/preferences.d/nodejs                                                          \ 
+  && echo "Pin-Priority: 600" >> /etc/apt/preferences.d/nodejs                                                          \
   && apt-key add /tmp/yarn.asc && rm /tmp/yarn.asc                                                                      \
   && echo "deb https://dl.yarnpkg.com/debian stable main" > /etc/apt/sources.list.d/yarnpkg.list                        \
   && apt-get update                                                                                                     \
