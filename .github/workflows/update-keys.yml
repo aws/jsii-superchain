@@ -1,0 +1,29 @@
+
+name: Update GPG Keys
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly at midnight on Sunday
+  workflow_dispatch: {}  # Allow manual trigger
+
+jobs:
+  update-corretto-key:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download latest Corretto key
+        run: curl -L https://apt.corretto.aws/corretto.key -o superchain/gpg/corretto.asc
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'chore: update Corretto GPG key'
+          title: 'chore: update Corretto GPG key'
+          body: 'Automated update of Corretto GPG key from https://apt.corretto.aws/corretto.key'
+          branch: update-corretto-key
+          delete-branch: true
