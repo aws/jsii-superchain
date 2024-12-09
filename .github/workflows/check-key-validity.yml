@@ -1,0 +1,23 @@
+
+name: Check GPG Key Expiry
+
+on:
+  schedule:
+    # Run every Monday at 9:00 UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: {} # Allow manual trigger
+
+jobs:
+  check-gpg-keys:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install GPG
+        run: sudo apt-get install -y gnupg
+
+      - name: Check GPG key expiry dates
+        run: |
+          ./scripts/check-key-expiry.sh
