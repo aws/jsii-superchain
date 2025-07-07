@@ -85,7 +85,7 @@ RUN POWERSHELL_RELEASE=$(curl -X GET -fSsIL "https://aka.ms/powershell-release?t
   && chmod +x /opt/microsoft/powershell/pwsh
 
 # Prepare Go distribution
-ARG GO_VERSION="1.18.5"
+ARG GO_VERSION="1.21.13"
 RUN curl -fSsL "https://golang.org/dl/go${GO_VERSION}.linux-${TARGETPLATFORM#linux/}.tar.gz" -o /tmp/go.tar.gz          \
   && mkdir -p /opt/golang/go                                                                                            \
   && tar -xzf /tmp/go.tar.gz -C /opt/golang/go --strip-components=1
@@ -244,7 +244,7 @@ RUN apt-key add /tmp/nodesource.asc && rm /tmp/nodesource.asc                   
   # Increase priority of the nodesource package
   && echo "Package: nodejs" > /etc/apt/preferences.d/nodejs                                                             \
   && echo 'Pin: origin deb.nodesource.com"' >> /etc/apt/preferences.d/nodejs                                            \
-  && echo "Pin-Priority: 600" >> /etc/apt/preferences.d/nodejs                                                          \ 
+  && echo "Pin-Priority: 600" >> /etc/apt/preferences.d/nodejs                                                          \
   && apt-key add /tmp/yarn.asc && rm /tmp/yarn.asc                                                                      \
   && echo "deb https://dl.yarnpkg.com/debian stable main" > /etc/apt/sources.list.d/yarnpkg.list                        \
   && apt-get update                                                                                                     \
