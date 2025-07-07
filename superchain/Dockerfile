@@ -162,6 +162,7 @@ RUN set -eo pipefail                                                            
   && curl -fSsL "https://sh.rustup.rs" | sh -s -- -y --no-modify-path --profile=minimal                                 \
   && echo "source ${CARGO_HOME}/env" >> /etc/profile.d/cargo.sh                                                         \
   && chmod -R a+rw ${CARGO_HOME}
+RUN rustup --version && rustup toolchain list
 ENV PATH=$PATH:${CARGO_HOME}/bin
 
 # Install Python 3 and pipx
