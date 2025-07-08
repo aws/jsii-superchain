@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 ########################################################################################################################
 # Introduction
 ########################################################################################################################
@@ -50,7 +52,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main"    
 SHELL ["/bin/zsh", "-c"]
 
 # Prepare maven binary distribution
-ARG M2_VERSION="3.9.4"
+ARG M2_VERSION="3.9.10"
 ENV M2_DISTRO="https://downloads.apache.org/maven/maven-3"
 RUN set -eo pipefail                                                                                                    \
   && curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz"                             \
@@ -85,7 +87,7 @@ RUN POWERSHELL_RELEASE=$(curl -X GET -fSsIL "https://aka.ms/powershell-release?t
   && chmod +x /opt/microsoft/powershell/pwsh
 
 # Prepare Go distribution
-ARG GO_VERSION="1.18.5"
+ARG GO_VERSION="1.21.13"
 RUN curl -fSsL "https://golang.org/dl/go${GO_VERSION}.linux-${TARGETPLATFORM#linux/}.tar.gz" -o /tmp/go.tar.gz          \
   && mkdir -p /opt/golang/go                                                                                            \
   && tar -xzf /tmp/go.tar.gz -C /opt/golang/go --strip-components=1
@@ -163,6 +165,7 @@ RUN set -eo pipefail                                                            
   && echo "source ${CARGO_HOME}/env" >> /etc/profile.d/cargo.sh                                                         \
   && chmod -R a+rw ${CARGO_HOME}
 ENV PATH=$PATH:${CARGO_HOME}/bin
+RUN rustup --version && rustup toolchain list
 
 # Install Python 3 and pipx
 # Starting in 'bookworm', 'pip install' needs special coercing (and 'apt-get install pipx' would be recommended)
@@ -244,7 +247,7 @@ RUN apt-key add /tmp/nodesource.asc && rm /tmp/nodesource.asc                   
   # Increase priority of the nodesource package
   && echo "Package: nodejs" > /etc/apt/preferences.d/nodejs                                                             \
   && echo 'Pin: origin deb.nodesource.com"' >> /etc/apt/preferences.d/nodejs                                            \
-  && echo "Pin-Priority: 600" >> /etc/apt/preferences.d/nodejs                                                          \ 
+  && echo "Pin-Priority: 600" >> /etc/apt/preferences.d/nodejs                                                          \
   && apt-key add /tmp/yarn.asc && rm /tmp/yarn.asc                                                                      \
   && echo "deb https://dl.yarnpkg.com/debian stable main" > /etc/apt/sources.list.d/yarnpkg.list                        \
   && apt-get update                                                                                                     \
@@ -335,19 +338,7 @@ RUN RUST_DOCS="${RUSTUP_HOME}/toolchains/$(rustup show active-toolchain | cut -d
   && echo "------------------------------------ LICENSE ------------------------------------" >> /NOTICE                \
   && cat ${M2_HOME}/LICENSE >> /NOTICE                                                                                  \
   && echo "################################################################################" >> /NOTICE                 \
-  && echo "cargo:" >> /NOTICE                                                                                           \
-  && echo "" >> /NOTICE                                                                                                 \
-  && echo "------------------------------------ LICENSE (APACHE) ------------------------------------" >> /NOTICE       \
-  && cat ${RUST_DOCS}/cargo/LICENSE-APACHE >> /NOTICE                                                                   \
-  && echo "" >> /NOTICE                                                                                                 \
-  && echo "------------------------------------ LICENSE (MIT) ------------------------------------" >> /NOTICE          \
-  && cat ${RUST_DOCS}/cargo/LICENSE-MIT >> /NOTICE                                                                      \
-  && echo "" >> /NOTICE                                                                                                 \
-  && echo "------------------------------------ THIRD-PARTY LICENSES ------------------------------------" >> /NOTICE   \
-  && cat ${RUST_DOCS}/cargo/LICENSE-THIRD-PARTY >> /NOTICE                                                              \
-  && echo "################################################################################" >> /NOTICE                 \
-  && echo "rust:" >> /NOTICE                                                                                            \
-  && cat ${RUST_DOCS}/rust/COPYRIGHT >> /NOTICE                                                                         \
+  && (cd $RUST_DOCS && find . -type f -name 'LICENSE*' -or -name 'COPYRIGHT*' -exec echo {} \; -exec cat {} \;) >> /NOTICE \
   && echo "################################################################################" >> /NOTICE                 \
   && echo "rustup:" >> /NOTICE                                                                                          \
   && echo "" >> /NOTICE                                                                                                 \
