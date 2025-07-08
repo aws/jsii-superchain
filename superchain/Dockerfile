@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 ########################################################################################################################
 # Introduction
 ########################################################################################################################
@@ -336,19 +338,7 @@ RUN RUST_DOCS="${RUSTUP_HOME}/toolchains/$(rustup show active-toolchain | cut -d
   && echo "------------------------------------ LICENSE ------------------------------------" >> /NOTICE                \
   && cat ${M2_HOME}/LICENSE >> /NOTICE                                                                                  \
   && echo "################################################################################" >> /NOTICE                 \
-  && echo "cargo:" >> /NOTICE                                                                                           \
-  && echo "" >> /NOTICE                                                                                                 \
-  && echo "------------------------------------ LICENSE (APACHE) ------------------------------------" >> /NOTICE       \
-  && cat ${RUST_DOCS}/cargo/LICENSE-APACHE >> /NOTICE                                                                   \
-  && echo "" >> /NOTICE                                                                                                 \
-  && echo "------------------------------------ LICENSE (MIT) ------------------------------------" >> /NOTICE          \
-  && cat ${RUST_DOCS}/cargo/LICENSE-MIT >> /NOTICE                                                                      \
-  && echo "" >> /NOTICE                                                                                                 \
-  && echo "------------------------------------ THIRD-PARTY LICENSES ------------------------------------" >> /NOTICE   \
-  && cat ${RUST_DOCS}/cargo/LICENSE-THIRD-PARTY >> /NOTICE                                                              \
-  && echo "################################################################################" >> /NOTICE                 \
-  && echo "rust:" >> /NOTICE                                                                                            \
-  && cat ${RUST_DOCS}/rust/COPYRIGHT >> /NOTICE                                                                         \
+  && (cd $RUST_DOCS && find . -type f -name 'LICENSE*' -or -name 'COPYRIGHT*' -exec echo {} \; -exec cat {} \;) >> /NOTICE \
   && echo "################################################################################" >> /NOTICE                 \
   && echo "rustup:" >> /NOTICE                                                                                          \
   && echo "" >> /NOTICE                                                                                                 \
