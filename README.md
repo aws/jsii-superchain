@@ -46,7 +46,7 @@ Any other tags should be *considered* deprecated or in the case of `nightly` ima
 | `Javascript` | see [Current image tags](#current-image-tags) |
 | `PowerShell` | `pwsh >= 7.2.16`                              |
 | `Python 3`   | see [Current image tags](#current-image-tags) |
-| `Go`         | `go >= 1.18`                                  |
+| `Go`         | `go >= 1.23.0`                                |
 
 ## Building
 
