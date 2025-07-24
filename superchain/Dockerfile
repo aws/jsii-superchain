@@ -40,6 +40,9 @@ ENV BUILDPLATFORM=${BUILDPLATFORM:-linux/amd64}                                 
 
 ARG DEBIAN_VERSION="bookworm"
 
+# debug
+RUN cat /etc/os-release
+
 # We require a couple of tools to be available in order to work here...
 RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main"                                            \
   > "/etc/apt/sources.list.d/${DEBIAN_VERSION}-backports.list"                                                          \
