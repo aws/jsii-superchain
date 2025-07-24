@@ -41,18 +41,15 @@ ENV BUILDPLATFORM=${BUILDPLATFORM:-linux/amd64}                                 
 ARG DEBIAN_VERSION="bookworm"
 
 # We require a couple of tools to be available in order to work here...
-RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main"                                            \
-  > "/etc/apt/sources.list.d/${DEBIAN_VERSION}-backports.list"                                                          \
-  && apt-get update                                                                                                     \
+RUN apt-get update                                                                                                      \
   && apt-get install -y gpg tar zsh                                                                                     \
-  # We need a "recent" (>= 7.71) version of curl for --retry-all-errors, so we get it from backports...
-  && apt-get install -y -t "${DEBIAN_VERSION}-backports" curl
+  && apt-get install -y curl
 
 # We'll be using zsh substitutions, so ensuring this is the shell we use
 SHELL ["/bin/zsh", "-c"]
 
 # Prepare maven binary distribution
-ARG M2_VERSION="3.9.10"
+ARG M2_VERSION="3.9.11"
 ENV M2_DISTRO="https://downloads.apache.org/maven/maven-3"
 RUN set -eo pipefail                                                                                                    \
   && curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz"                             \
