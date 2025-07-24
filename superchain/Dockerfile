@@ -46,7 +46,7 @@ RUN cat /etc/os-release
 # We require a couple of tools to be available in order to work here...
 RUN apt-get update                                                                                                     \
   && apt-get install -y gpg tar zsh                                                                                     \
-  && apt-get install -y -t curl
+  && apt-get install -y curl
 
 # We'll be using zsh substitutions, so ensuring this is the shell we use
 SHELL ["/bin/zsh", "-c"]
