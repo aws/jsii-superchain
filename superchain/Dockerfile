@@ -40,9 +40,6 @@ ENV BUILDPLATFORM=${BUILDPLATFORM:-linux/amd64}                                 
 
 ARG DEBIAN_VERSION="bookworm"
 
-# debug
-RUN cat /etc/os-release
-
 # We require a couple of tools to be available in order to work here...
 RUN apt-get update                                                                                                      \
   && apt-get install -y gpg tar zsh                                                                                     \
