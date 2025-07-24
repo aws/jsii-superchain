@@ -44,7 +44,7 @@ ARG DEBIAN_VERSION="bookworm"
 RUN cat /etc/os-release
 
 # We require a couple of tools to be available in order to work here...
-RUN apt-get update                                                                                                     \
+RUN apt-get update                                                                                                      \
   && apt-get install -y gpg tar zsh                                                                                     \
   && apt-get install -y curl
 
