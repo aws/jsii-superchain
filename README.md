@@ -27,10 +27,11 @@ public.ecr.aws/jsii/superchain:<image-tag>
 
 | Image tag                | Debian          | Node | Python |
 | ------------------------ | --------------- | ---- | ------ |
-| `1-bookworm-slim`        | `12` `bookworm` | `18` | `3.11` |
+| `1-bookworm-slim`        | `12` `bookworm` | `20` | `3.11` |
 | `1-bookworm-slim-node18` | `12` `bookworm` | `18` | `3.11` |
 | `1-bookworm-slim-node20` | `12` `bookworm` | `20` | `3.11` |
 | `1-bookworm-slim-node22` | `12` `bookworm` | `22` | `3.11` |
+| `1-bookworm-slim-node22` | `12` `bookworm` | `24` | `3.11` |
 | `1-bullseye-slim-node20` | `11` `bullseye` | `20` | `3.9`  |
 | `1-bullseye-slim-node22` | `11` `bullseye` | `22` | `3.9`  |
 
@@ -91,12 +92,14 @@ Generally only actively versions that are actively supported by upstream project
 
 ### Debian
 
-We only publish images for Debian releases that receive updates from the [Debian security team]([debian-releases](https://wiki.debian.org/DebianReleases#Production_Releases)).
-All superchain images are based on the slim variant.
+We only publish images for [Debian releases under LTS](https://wiki.debian.org/DebianReleases#Production_Releases) (but not ELTS).
+All `superchain` images are based on the slim variant.
 
 ### Node
 
-We publish images variants for Node versions that are Current or LTS.
+We publish images variants for stable Node versions supported by the [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/node-versions.html).
+Usually this means all even Node versions until six month after their EOL.
+We will only add new Node variants to the latest Debian release.
 We include the npm version that ships with the version of Node.
 
 ### Python
