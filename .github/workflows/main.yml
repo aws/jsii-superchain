@@ -55,7 +55,7 @@ jobs:
       # Federate into the PR Validation AWS Account
       - name: Federate into AWS
         if: steps.federate_to_aws.outputs.enabled == 'true'
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: us-east-1
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
@@ -150,7 +150,7 @@ jobs:
       # Re-authenticate to ECR Public, this time with image-push permissions
       - name: Federate with AWS role for ECR Public push
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: us-east-1
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_ECR_PUBLIC_PUSH }}
