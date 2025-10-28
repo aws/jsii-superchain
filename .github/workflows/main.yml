@@ -202,7 +202,7 @@ jobs:
 
       - name: Update README (any tag)
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        uses: peter-evans/dockerhub-description@v4
+        uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ steps.credentials.outputs.username }}
           password: ${{ steps.credentials.outputs.password }}
