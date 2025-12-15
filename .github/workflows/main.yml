@@ -118,20 +118,26 @@ jobs:
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@v1.3.1
       - name: Build Image
-        working-directory: superchain
-        run: |-
-          docker buildx build                                                   \
-            --quiet                                                             \
-            --builder ${{ steps.buildx.outputs.name }}                          \
-            --platform linux/amd64,linux/arm64                                  \
-            --target superchain                                                 \
-            --pull                                                              \
-            --build-arg BUILD_TIMESTAMP="${{ steps.build-time.outputs.value }}" \
-            --build-arg COMMIT_ID='${{ github.sha }}'                           \
-            --build-arg DEBIAN_VERSION=${{ matrix.debian }}                     \
-            --build-arg NODE_MAJOR_VERSION=${{ matrix.node }}                   \
-            -f Dockerfile                                                       \
-            .
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 45
+          max_attempts: 3
+          polling_interval_seconds: 30
+          retry_on: error
+          command: |
+            cd superchain
+            docker buildx build                                                   \
+              --quiet                                                             \
+              --builder ${{ steps.buildx.outputs.name }}                          \
+              --platform linux/amd64,linux/arm64                                  \
+              --target superchain                                                 \
+              --pull                                                              \
+              --build-arg BUILD_TIMESTAMP="${{ steps.build-time.outputs.value }}" \
+              --build-arg COMMIT_ID='${{ github.sha }}'                           \
+              --build-arg DEBIAN_VERSION=${{ matrix.debian }}                     \
+              --build-arg NODE_MAJOR_VERSION=${{ matrix.node }}                   \
+              -f Dockerfile                                                       \
+              .
 
       - name: Test Image
         working-directory: superchain
