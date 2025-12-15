@@ -23,8 +23,9 @@ jobs:
       fail-fast: false
       matrix:
         debian:
+          - "trixie" # 13
           - "bookworm" # 12
-        node: ["18", "20", "22", "24"] # STOP! Before changing anything here, read our maintenance policy in the README
+        node: ["20", "22", "24"] # STOP! Before changing anything here, read our maintenance policy in the README
         include:
           # We publish bullseye only with Node 20 & 22
           - debian: "bullseye" # 11
@@ -33,7 +34,7 @@ jobs:
             node: "22"
     env:
       # Node version whose images will be aliased without the -nodeXX segment
-      DEFAULT_NODE_MAJOR_VERSION: 20
+      DEFAULT_NODE_MAJOR_VERSION: 22
     steps:
       - name: Check out
         uses: actions/checkout@v6
