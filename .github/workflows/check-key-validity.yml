@@ -1,5 +1,7 @@
 
 name: Check GPG Key Expiry
+permissions:
+  contents: read
 
 on:
   schedule:
