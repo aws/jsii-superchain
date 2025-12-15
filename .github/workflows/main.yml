@@ -1,5 +1,7 @@
 # Workflows pertaining to the jsii/superchain Docker image
 name: Docker Images
+permissions:
+  contents: read
 
 on:
   workflow_dispatch: {}
