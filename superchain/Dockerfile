@@ -16,7 +16,7 @@
 # more efficient, and allows us to run cross-architecture builds in the most efficient possible manner, by running the
 # "platform-independent" elements within the build platform, which does not require any kind of emulation.
 
-ARG DEBIAN_VERSION="bookworm"
+ARG DEBIAN_VERSION="trixie"
 
 ########################################################################################################################
 # NOTE: This uses public.ecr.aws/docker/library/debian instead of public.ecr.aws/debian/debian (which would be
@@ -28,7 +28,7 @@ ARG DEBIAN_VERSION="bookworm"
 ########################################################################################################################
 # Prepare install images of "manual" binary distributions (runs on BUILD platform for speed)
 ########################################################################################################################
-FROM --platform=${BUILDPLATFORM} public.ecr.aws/docker/library/debian:${DEBIAN_VERSION}-slim as bindist
+FROM --platform=${BUILDPLATFORM} public.ecr.aws/docker/library/debian:${DEBIAN_VERSION}-slim AS bindist
 
 # Build & target platforms, they are provided by buildx and will look like "linux/amd64" or "linux/arm64"
 ARG BUILDPLATFORM
@@ -38,7 +38,7 @@ ARG TARGETPLATFORM
 ENV BUILDPLATFORM=${BUILDPLATFORM:-linux/amd64}                                                                         \
   TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
-ARG DEBIAN_VERSION="bookworm"
+ARG DEBIAN_VERSION="trixie"
 
 # We require a couple of tools to be available in order to work here...
 RUN apt-get update                                                                                                      \
@@ -92,7 +92,7 @@ RUN curl -fSsL "https://golang.org/dl/go${GO_VERSION}.linux-${TARGETPLATFORM#lin
 ########################################################################################################################
 # Set up the image
 ########################################################################################################################
-FROM public.ecr.aws/docker/library/debian:${DEBIAN_VERSION}-slim as staging
+FROM public.ecr.aws/docker/library/debian:${DEBIAN_VERSION}-slim AS staging
 
 # Build & target platforms, they are provided by buildx and will look like "linux/amd64" or "linux/arm64"
 ARG BUILDPLATFORM
@@ -102,7 +102,7 @@ ARG TARGETPLATFORM
 ENV BUILDPLATFORM=${BUILDPLATFORM:-linux/amd64}                                                                         \
   TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
-ARG DEBIAN_VERSION="bookworm"
+ARG DEBIAN_VERSION="trixie"
 
 SHELL ["/bin/bash", "-c"]
 
@@ -145,10 +145,10 @@ RUN apt-get update                                                              
   && rm -rf /var/lib/apt/lists/*
 
 # Install mono
-COPY gpg/mono.asc /tmp/mono.asc
-RUN apt-key add /tmp/mono.asc && rm /tmp/mono.asc                                                                       \
+COPY gpg/mono.asc /etc/apt/keyrings/mono.asc
+RUN                                                                                                                     \
   # Mono only provides a Debian Buster (10) distribution point, but it works with subsequent debians, too...
-  && echo "deb https://download.mono-project.com/repo/debian stable-buster main"                                        \
+  echo "deb [signed-by=/etc/apt/keyrings/mono.asc] https://download.mono-project.com/repo/debian stable-buster main"                                           \
   > /etc/apt/sources.list.d/mono-official-stable.list                                                                   \
   && apt-get update                                                                                                     \
   && apt-get -y install mono-devel                                                                                      \
@@ -190,9 +190,8 @@ RUN curl "${AWS_CLI_V2_URL}" -o "/tmp/awscliv2.zip"                             
 
 
 # Install JDK8 (Amazon Corretto 8)
-COPY gpg/corretto.asc /tmp/corretto.asc
-RUN apt-key add /tmp/corretto.asc && rm /tmp/corretto.asc                                                               \
-  && echo "deb https://apt.corretto.aws stable main" > /etc/apt/sources.list.d/amazon-corretto.list                     \
+COPY gpg/corretto.asc /etc/apt/keyrings/corretto.asc
+RUN echo "deb [signed-by=/etc/apt/keyrings/corretto.asc] https://apt.corretto.aws stable main" > /etc/apt/sources.list.d/amazon-corretto.list                      \
   && apt-get update                                                                                                     \
   && mkdir -p /usr/share/man/man1                                                                                       \
   && apt-get -y install java-20-amazon-corretto-jdk                                                                     \
@@ -200,9 +199,8 @@ RUN apt-key add /tmp/corretto.asc && rm /tmp/corretto.asc                       
   && rm -rf /var/lib/apt/lists/*
 
 # Install Docker
-COPY gpg/docker.asc /tmp/docker.asc
-RUN apt-key add /tmp/docker.asc && rm /tmp/docker.asc                                                                   \
-  && echo "deb https://download.docker.com/linux/debian ${DEBIAN_VERSION} stable" > /etc/apt/sources.list.d/docker.list \
+COPY gpg/docker.asc /etc/apt/keyrings/docker.asc
+RUN echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian ${DEBIAN_VERSION} stable" > /etc/apt/sources.list.d/docker.list  \
   && apt-get update                                                                                                     \
   && apt-get -y install docker-ce docker-ce-cli containerd.io                                                           \
   && rm -rf /var/lib/apt/lists/*
@@ -235,18 +233,16 @@ COPY --from=bindist /opt/golang/go ${GOROOT}
 # Install Node (configurable with '--build-arg NODE_MAJOR_VERSION=xxx') and yarn
 # (Put this as late as possible in the Dockerfile so we get to reuse the layer cache
 # for most of the multiple builds).
-ARG NODE_MAJOR_VERSION="18"
-COPY gpg/nodesource.asc /tmp/nodesource.asc
-COPY gpg/yarn.asc /tmp/yarn.asc
-RUN apt-key add /tmp/nodesource.asc && rm /tmp/nodesource.asc                                                           \
-  && echo "deb https://deb.nodesource.com/node_${NODE_MAJOR_VERSION}.x nodistro main"                                   \
+ARG NODE_MAJOR_VERSION="20"
+COPY gpg/nodesource.asc /etc/apt/keyrings/nodesource.asc
+COPY gpg/yarn.asc /etc/apt/keyrings/yarn.asc
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_${NODE_MAJOR_VERSION}.x nodistro main"                                    \
   > /etc/apt/sources.list.d/nodesource.list                                                                             \
   # Increase priority of the nodesource package
   && echo "Package: nodejs" > /etc/apt/preferences.d/nodejs                                                             \
   && echo 'Pin: origin deb.nodesource.com"' >> /etc/apt/preferences.d/nodejs                                            \
   && echo "Pin-Priority: 600" >> /etc/apt/preferences.d/nodejs                                                          \
-  && apt-key add /tmp/yarn.asc && rm /tmp/yarn.asc                                                                      \
-  && echo "deb https://dl.yarnpkg.com/debian stable main" > /etc/apt/sources.list.d/yarnpkg.list                        \
+  && echo "deb [signed-by=/etc/apt/keyrings/yarn.asc] https://dl.yarnpkg.com/debian stable main" > /etc/apt/sources.list.d/yarnpkg.list                        \
   && apt-get update                                                                                                     \
   && apt-get -y install nodejs yarn                                                                                     \
   && rm -rf /var/lib/apt/lists/*
@@ -373,7 +369,7 @@ CMD ["/bin/bash"]
 ########################################################################################################################
 # Creating squashed image
 ########################################################################################################################
-FROM scratch as superchain
+FROM scratch AS superchain
 # Set locale and some other interesting environment variables
 ENV LANG="C.UTF-8"                                                                                                      \
   LC_ALL="C.UTF-8"                                                                                                      \
@@ -417,7 +413,7 @@ CMD ["/bin/bash"]
 ########################################################################################################################
 # Running tests
 ########################################################################################################################
-FROM superchain as test
+FROM superchain AS test
 ENV CI=true
 COPY --chown=superchain:superchain . /tmp/source
 VOLUME /var/lib/docker

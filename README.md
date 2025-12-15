@@ -27,50 +27,19 @@ public.ecr.aws/jsii/superchain:<image-tag>
 
 | Image tag                | Debian          | Node | Python |
 | ------------------------ | --------------- | ---- | ------ |
-| `1-bookworm-slim`        | `12` `bookworm` | `20` | `3.11` |
+| `1-trixie-slim`          | `13` `trixie`   | `22` | `3.13` |
+| `1-trixie-slim-node20`   | `13` `trixie`   | `20` | `3.13` |
+| `1-trixie-slim-node22`   | `13` `trixie`   | `22` | `3.13` |
+| `1-trixie-slim-node24`   | `13` `trixie`   | `24` | `3.13` |
+| `1-bookworm-slim`        | `12` `bookworm` | `22` | `3.11` |
 | `1-bookworm-slim-node18` | `12` `bookworm` | `18` | `3.11` |
 | `1-bookworm-slim-node20` | `12` `bookworm` | `20` | `3.11` |
 | `1-bookworm-slim-node22` | `12` `bookworm` | `22` | `3.11` |
-| `1-bookworm-slim-node22` | `12` `bookworm` | `24` | `3.11` |
+| `1-bookworm-slim-node24` | `12` `bookworm` | `24` | `3.11` |
 | `1-bullseye-slim-node20` | `11` `bullseye` | `20` | `3.9`  |
 | `1-bullseye-slim-node22` | `11` `bullseye` | `22` | `3.9`  |
 
 Any other tags should be *considered* deprecated or in the case of `nightly` images *experimental*.
-
-## Included Language SDKs
-
-| SDK          | Version                                       |
-| ------------ | --------------------------------------------- |
-| `OpenJDK 20` | Amazon Corretto `>= 20.0.2`                   |
-| `.NET SDK`   | `>= 6.0.14`                                   |
-| `mono`       | `>= 6.12.0.200`                               |
-| `Javascript` | see [Current image tags](#current-image-tags) |
-| `PowerShell` | `pwsh >= 7.2.16`                              |
-| `Python 3`   | see [Current image tags](#current-image-tags) |
-| `Go`         | `go >= 1.23.0`                                |
-
-## Building
-
-This docker image can be build locally:
-
-```console
-docker build ./superchain -t jsii/superchain:local
-```
-
-In case the tests fail, skip the tests and inspect the image manually:
-
-```console
-docker build ./superchain -t jsii/superchain:local --target=superchain
-```
-
-### NodeJS and NPM
-
-If you are building this image from source, you can control the Node version with the
-`NODE_MAJOR_VERSION` build argument:
-
-```console
-docker build [...] --build-arg NODE_MAJOR_VERSION=22
-```
 
 ### Image tags
 
@@ -80,7 +49,7 @@ Image tags are named using the following pattern:
 public.ecr.aws/jsii/superchain:<JSII-MAJOR>-<BASE>(-node<NODE-MAJOR>)(-nightly)
 ```
 
-- `<JSII-MAJOR>` is the major line of the jsii toolchain (must be `1`)
+- `<JSII-MAJOR>` is the major line of the jsii toolchain (currently only `1`)
 - `<BASE>` is the base image tag, currently supported base images are
 - `<NODE-MAJOR>` is the major version of Node.js contained in the image
 - `-nightly` images are released from the `HEAD` of the [`aws/jsii`][jsii]
@@ -107,6 +76,18 @@ We include the npm version that ships with the version of Node.
 The image includes the most recent Python version available for the respective Debian distribution.
 A complete list can be viewed on the [Debian website](https://wiki.debian.org/Python#Supported_Python_Versions).
 
+## Included Language SDKs
+
+| SDK          | Version                                       |
+| ------------ | --------------------------------------------- |
+| `OpenJDK 20` | Amazon Corretto `>= 20.0.2`                   |
+| `.NET SDK`   | `>= 6.0.14`                                   |
+| `mono`       | `>= 6.12.0.200`                               |
+| `Javascript` | see [Current image tags](#current-image-tags) |
+| `PowerShell` | `pwsh >= 7.2.16`                              |
+| `Python 3`   | see [Current image tags](#current-image-tags) |
+| `Go`         | `go >= 1.23.0`                                |
+
 ## Included Tools & Utilities
 
 The following tools & utilities are available for your convenience.
@@ -126,6 +107,29 @@ Versions are generally the latest available for the respective Debian distributi
 | `zip` & `unzip` | `>= 6.0-19`                |
 | `gh`            | `>= 1.13.1`                |
 | `sam`           | `>= 1.102.0`               |
+
+## Building
+
+This docker image can be build locally:
+
+```console
+docker build ./superchain -t jsii/superchain:local
+```
+
+In case the tests fail, skip the tests and inspect the image manually:
+
+```console
+docker build ./superchain -t jsii/superchain:local --target=superchain
+```
+
+### NodeJS and NPM
+
+If you are building this image from source, you can control the Node version with the
+`NODE_MAJOR_VERSION` build argument:
+
+```console
+docker build [...] --build-arg NODE_MAJOR_VERSION=22
+```
 
 ## Releasing
 
