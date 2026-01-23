@@ -49,7 +49,7 @@ RUN apt-get update                                                              
 SHELL ["/bin/zsh", "-c"]
 
 # Prepare maven binary distribution
-ARG M2_VERSION="3.9.11"
+ARG M2_VERSION="3.9.12"
 ENV M2_DISTRO="https://downloads.apache.org/maven/maven-3"
 RUN set -eo pipefail                                                                                                    \
   && curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz"                             \
@@ -235,17 +235,16 @@ COPY --from=bindist /opt/golang/go ${GOROOT}
 # for most of the multiple builds).
 ARG NODE_MAJOR_VERSION="20"
 COPY gpg/nodesource.asc /etc/apt/keyrings/nodesource.asc
-COPY gpg/yarn.asc /etc/apt/keyrings/yarn.asc
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_${NODE_MAJOR_VERSION}.x nodistro main"                                    \
   > /etc/apt/sources.list.d/nodesource.list                                                                             \
   # Increase priority of the nodesource package
   && echo "Package: nodejs" > /etc/apt/preferences.d/nodejs                                                             \
   && echo 'Pin: origin deb.nodesource.com"' >> /etc/apt/preferences.d/nodejs                                            \
   && echo "Pin-Priority: 600" >> /etc/apt/preferences.d/nodejs                                                          \
-  && echo "deb [signed-by=/etc/apt/keyrings/yarn.asc] https://dl.yarnpkg.com/debian stable main" > /etc/apt/sources.list.d/yarnpkg.list                        \
   && apt-get update                                                                                                     \
-  && apt-get -y install nodejs yarn                                                                                     \
-  && rm -rf /var/lib/apt/lists/*
+  && apt-get -y install nodejs                                                                                          \
+  && rm -rf /var/lib/apt/lists/*                                                                                        \
+  && npm install --global yarn
 
 
 # Install Amazon SSM agent (allows debugging of builds via `codebuild-breakpoint`, https://go.aws/3TVW7vL)
