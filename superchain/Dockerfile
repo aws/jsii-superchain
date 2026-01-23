@@ -49,7 +49,7 @@ RUN apt-get update                                                              
 SHELL ["/bin/zsh", "-c"]
 
 # Prepare maven binary distribution
-ARG M2_VERSION="3.9.11"
+ARG M2_VERSION="3.9.12"
 ENV M2_DISTRO="https://downloads.apache.org/maven/maven-3"
 RUN set -eo pipefail                                                                                                    \
   && curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz"                             \
