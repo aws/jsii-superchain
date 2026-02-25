@@ -145,6 +145,14 @@ RUN apt-get update                                                              
   && rm -rf /var/lib/apt/lists/*
 
 # Install mono
+# TODO: For Debian 14 (Forky), switch to official .NET instead of mono.
+# Mono's GPG key uses SHA1 binding signatures, which Trixie's sqv rejects since 2026-02-01.
+# Override the apt-sequoia policy to extend SHA1 acceptance.
+RUN if [[ "${DEBIAN_VERSION}" == "trixie" ]]; then                                                                      \
+  mkdir -p /etc/crypto-policies/back-ends                                                                               \
+  && printf '[hash_algorithms]\nsha1.second_preimage_resistance = 2030-02-01\n'                                         \
+  > /etc/crypto-policies/back-ends/apt-sequoia.config;                                                                  \
+  fi
 COPY gpg/mono.asc /etc/apt/keyrings/mono.asc
 RUN                                                                                                                     \
   # Mono only provides a Debian Buster (10) distribution point, but it works with subsequent debians, too...
