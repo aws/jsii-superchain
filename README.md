@@ -86,7 +86,7 @@ A complete list can be viewed on the [Debian website](https://wiki.debian.org/Py
 | `Javascript` | see [Current image tags](#current-image-tags) |
 | `PowerShell` | `pwsh >= 7.2.16`                              |
 | `Python 3`   | see [Current image tags](#current-image-tags) |
-| `Go`         | `go >= 1.23.0`                                |
+| `Go`         | `go >= 1.25.0`                                |
 
 ## Included Tools & Utilities
 
