@@ -142,6 +142,7 @@ RUN apt-get update                                                              
   unzip                                                                                                                 \
   zip                                                                                                                   \
   acl                                                                                                                   \
+  xxd                                                                                                                   \
   && rm -rf /var/lib/apt/lists/*
 
 # Install mono
