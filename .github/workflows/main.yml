@@ -96,7 +96,7 @@ jobs:
 
       - name: Set up docker buildx
         id: buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
         with:
           # Disable parallelism because IO contention makes it too slow on GitHub
           # workers...
