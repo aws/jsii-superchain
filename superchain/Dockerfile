@@ -51,11 +51,14 @@ SHELL ["/bin/zsh", "-c"]
 # Prepare maven binary distribution
 ARG M2_VERSION="3.9.15"
 ENV M2_DISTRO="https://downloads.apache.org/maven/maven-3"
+ENV M2_ARCHIVE="https://archive.apache.org/dist/maven/maven-3"
 RUN set -eo pipefail                                                                                                    \
-  && curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz"                             \
-  -o /tmp/apache-maven.tar.gz                                                                                           \
-  && curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz.asc"                         \
-  -o /tmp/apache-maven.tar.gz.asc                                                                                       \
+  && M2_BINARY="apache-maven-${M2_VERSION}-bin.tar.gz"                                                                  \
+  && (curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/${M2_BINARY}" -o /tmp/apache-maven.tar.gz                         \
+      || (echo "WARNING: Maven ${M2_VERSION} not found on downloads mirror, falling back to archive.apache.org"         \
+          && curl -fSsL "${M2_ARCHIVE}/${M2_VERSION}/binaries/${M2_BINARY}" -o /tmp/apache-maven.tar.gz))               \
+  && (curl -fSsL "${M2_DISTRO}/${M2_VERSION}/binaries/${M2_BINARY}.asc" -o /tmp/apache-maven.tar.gz.asc                 \
+      || curl -fSsL "${M2_ARCHIVE}/${M2_VERSION}/binaries/${M2_BINARY}.asc" -o /tmp/apache-maven.tar.gz.asc)            \
   && mkdir -p /tmp/gpg-maven && chmod go-rwx /tmp/gpg-maven                                                             \
   && curl -fSsL "https://downloads.apache.org/maven/KEYS" | gpg --homedir /tmp/gpg-maven --import                       \
   && gpg --homedir /tmp/gpg-maven --verify /tmp/apache-maven.tar.gz.asc /tmp/apache-maven.tar.gz                        \
