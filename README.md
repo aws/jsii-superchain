@@ -154,3 +154,11 @@ software contained within.
 
 For more information, refer to the `/NOTICE` file that is present in the Docker
 image.
+
+# FAQ
+
+Q: The docker build is failing because it cannot access `proxy.golang.org`, how do I fix this?
+A: By default, Go attempts to use a module proxy, which caches modules to accelerate downloads. However, some network configurations block this proxy. Run `go env -w GOPROXY=direct` to download from source.
+
+Q: During docker image build, why do I see a warning like: "WARNING: Maven ${M2_VERSION} not found on downloads mirror, falling back to archive.apache.org"?
+A: This indicates that `M2_VERSION` has fallen behind the latest version of Maven. Update `M2_VERSION` to the latest version to address this. We first attempt to download the Maven version matching `M2_VERSION` from the regular distro: https://downloads.apache.org/maven/maven-3. However, when new versions are released, older versions are removed from that distro. We emit this warning and fall back to the archive link: https://archive.apache.org/dist/maven/maven-3.
