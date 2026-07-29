@@ -27,12 +27,12 @@ public.ecr.aws/jsii/superchain:<image-tag>
 
 | Image tag                | Debian          | Node | Python |
 | ------------------------ | --------------- | ---- | ------ |
-| `1-trixie-slim`          | `13` `trixie`   | `22` | `3.13` |
+| `1-trixie-slim`          | `13` `trixie`   | `24` | `3.13` |
 | `1-trixie-slim-node20`   | `13` `trixie`   | `20` | `3.13` |
 | `1-trixie-slim-node22`   | `13` `trixie`   | `22` | `3.13` |
 | `1-trixie-slim-node24`   | `13` `trixie`   | `24` | `3.13` |
-| `1-bookworm-slim`        | `12` `bookworm` | `22` | `3.11` |
-| `1-bookworm-slim-node18` | `12` `bookworm` | `18` | `3.11` |
+| `1-trixie-slim-node26`   | `13` `trixie`   | `26` | `3.13` |
+| `1-bookworm-slim`        | `12` `bookworm` | `24` | `3.11` |
 | `1-bookworm-slim-node20` | `12` `bookworm` | `20` | `3.11` |
 | `1-bookworm-slim-node22` | `12` `bookworm` | `22` | `3.11` |
 | `1-bookworm-slim-node24` | `12` `bookworm` | `24` | `3.11` |
@@ -70,6 +70,7 @@ We publish images variants for stable Node versions supported by the [AWS CDK](h
 Usually this means all even Node versions until six month after their EOL.
 We will only add new Node variants to the latest Debian release.
 We include the npm version that ships with the version of Node.
+Tags without an explicit `-nodeXX` segment use the current [Active LTS](https://nodejs.org/en/about/previous-releases) version of Node.
 
 ### Python
 
@@ -155,10 +156,10 @@ software contained within.
 For more information, refer to the `/NOTICE` file that is present in the Docker
 image.
 
-# FAQ
+## FAQ
 
 Q: The docker build is failing because it cannot access `proxy.golang.org`, how do I fix this?
 A: By default, Go attempts to use a module proxy, which caches modules to accelerate downloads. However, some network configurations block this proxy. Run `go env -w GOPROXY=direct` to download from source.
 
 Q: During docker image build, why do I see a warning like: "WARNING: Maven ${M2_VERSION} not found on downloads mirror, falling back to archive.apache.org"?
-A: This indicates that `M2_VERSION` has fallen behind the latest version of Maven. Update `M2_VERSION` to the latest version to address this. We first attempt to download the Maven version matching `M2_VERSION` from the regular distro: https://downloads.apache.org/maven/maven-3. However, when new versions are released, older versions are removed from that distro. We emit this warning and fall back to the archive link: https://archive.apache.org/dist/maven/maven-3.
+A: This indicates that `M2_VERSION` has fallen behind the latest version of Maven. Update `M2_VERSION` to the latest version to address this. We first attempt to download the Maven version matching `M2_VERSION` from the regular distro: <https://downloads.apache.org/maven/maven-3>. However, when new versions are released, older versions are removed from that distro. We emit this warning and fall back to the archive link: <https://archive.apache.org/dist/maven/maven-3>.

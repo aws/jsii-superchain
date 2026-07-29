@@ -247,7 +247,7 @@ COPY --from=bindist /opt/golang/go ${GOROOT}
 # Install Node (configurable with '--build-arg NODE_MAJOR_VERSION=xxx') and yarn
 # (Put this as late as possible in the Dockerfile so we get to reuse the layer cache
 # for most of the multiple builds).
-ARG NODE_MAJOR_VERSION="20"
+ARG NODE_MAJOR_VERSION="24"
 COPY gpg/nodesource.asc /etc/apt/keyrings/nodesource.asc
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_${NODE_MAJOR_VERSION}.x nodistro main"                                    \
   > /etc/apt/sources.list.d/nodesource.list                                                                             \
