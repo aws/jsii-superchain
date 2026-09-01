@@ -96,6 +96,7 @@ Versions are generally the latest available for the respective Debian distributi
 | --------------- | -------------------------- |
 | `aws`           | `>= 2.11.17`               |
 | `bundler`       | `>= 1.17.3` and `>= 2.1.4` |
+| `corepack`      | `>= 0.34.7`                |
 | `docker`        | `>= 24.0.7-ce`             |
 | `git`           | `>= 2.30.2`                |
 | `make`          | `>= 4.3`                   |

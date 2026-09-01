@@ -250,7 +250,7 @@ COPY m2-settings.xml /root/.m2/settings.xml
 # Install Go
 COPY --from=bindist /opt/golang/go ${GOROOT}
 
-# Install Node (configurable with '--build-arg NODE_MAJOR_VERSION=xxx') and yarn
+# Install Node (configurable with '--build-arg NODE_MAJOR_VERSION=xxx'), yarn, and Corepack
 # (Put this as late as possible in the Dockerfile so we get to reuse the layer cache
 # for most of the multiple builds).
 ARG NODE_MAJOR_VERSION="24"
@@ -264,7 +264,8 @@ RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesourc
   && apt-get update                                                                                                     \
   && apt-get -y install nodejs                                                                                          \
   && rm -rf /var/lib/apt/lists/*                                                                                        \
-  && npm install --global yarn
+  && npm install --global corepack@0.34.7 yarn                                                                          \
+  && corepack enable
 
 
 # Install Amazon SSM agent (allows debugging of builds via `codebuild-breakpoint`, https://go.aws/3TVW7vL)
