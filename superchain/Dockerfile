@@ -264,7 +264,7 @@ RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesourc
   && apt-get update                                                                                                     \
   && apt-get -y install nodejs                                                                                          \
   && rm -rf /var/lib/apt/lists/*                                                                                        \
-  && npm install --global corepack@0.34.7 yarn                                                                          \
+  && npm install --global corepack yarn                                                                          \
   && corepack enable
 
 
