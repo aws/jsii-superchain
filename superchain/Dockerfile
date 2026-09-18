@@ -40,6 +40,18 @@ ENV BUILDPLATFORM=${BUILDPLATFORM:-linux/amd64}                                 
 
 ARG DEBIAN_VERSION="trixie"
 
+# Debian 11 "bullseye" reached LTS end-of-life on 2026-08-31, and its security pool is now being
+# purged while the package indexes still advertise the removed files, so deb.debian.org answers 404
+# for packages apt believes exist. archive.debian.org carries no bullseye-security suite at all, so
+# instead we re-enable the snapshot.debian.org sources that the base image already ships (commented
+# out), pinned to the very snapshot the image was built from.
+RUN if [ "${DEBIAN_VERSION}" = "bullseye" ]; then                                                                       \
+  sed -i -e 's|^deb http://deb.debian.org|#deb http://deb.debian.org|'                                                  \
+  -e 's|^# deb http://snapshot.debian.org|deb http://snapshot.debian.org|'                                              \
+  /etc/apt/sources.list                                                                                                 \
+  && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/10-no-check-valid-until;                          \
+  fi
+
 # We require a couple of tools to be available in order to work here...
 RUN apt-get update                                                                                                      \
   && apt-get install -y gpg tar zsh                                                                                     \
@@ -123,6 +135,16 @@ ENV LANG="C.UTF-8"                                                              
   \
   GOROOT="/opt/golang/go"
 
+# See the comment on the equivalent step in the "bindist" stage: bullseye is EOL and deb.debian.org
+# no longer serves the packages its indexes advertise, so we use the base image's own pinned
+# snapshot.debian.org sources instead.
+RUN if [ "${DEBIAN_VERSION}" = "bullseye" ]; then                                                                       \
+  sed -i -e 's|^deb http://deb.debian.org|#deb http://deb.debian.org|'                                                  \
+  -e 's|^# deb http://snapshot.debian.org|deb http://snapshot.debian.org|'                                              \
+  /etc/apt/sources.list                                                                                                 \
+  && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/10-no-check-valid-until;                          \
+  fi
+
 # Installing the system dependencies we need...
 RUN apt-get update                                                                                                      \
   && apt-get -y upgrade                                                                                                 \
@@ -178,10 +200,16 @@ RUN rustup --version && rustup toolchain list
 # Install Python 3 and pipx
 # Starting in 'bookworm', 'pip install' needs special coercing (and 'apt-get install pipx' would be recommended)
 # but that flag is not recognized yet in older distros.
+# 'pipx' requires 'packaging>=26', while Debian ships an older 'python3-packaging' as a dependency of
+# 'python3-pip'. pip cannot upgrade that copy in-place because Debian's dist-info has no RECORD file
+# ("error: uninstall-no-record-file"), and '--break-system-packages' only permits writing to the
+# system location, not removing a dpkg-managed distribution. Installing the newer 'packaging'
+# alongside it (it shadows the dpkg copy via /usr/local) keeps both pip and dpkg consistent.
 RUN apt-get update                                                                                                      \
   && apt-get -y install python3-dev python3-pip python3-venv                                                            \
   && coercepip='--break-system-packages'                                                                                \
   && if [[ ${DEBIAN_VERSION} == "buster" || ${DEBIAN_VERSION} == "bullseye" ]]; then coercepip=''; fi                   \
+  && python3 -m pip install ${coercepip} --ignore-installed packaging                                                   \
   && python3 -m pip install ${coercepip} pipx "pip>=23.3.1" "setuptools>=68.0.0" "wheel>=0.41.3"                        \
   && rm -rf /var/lib/apt/lists/*
 
