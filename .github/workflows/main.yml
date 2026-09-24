@@ -117,7 +117,7 @@ jobs:
       - name: Show Available Disk Space
         run: df -h && du -h
       - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@v1.3.1
+        uses: jlumbroso/free-disk-space@v2.0.0
       - name: Build Image
         uses: nick-fields/retry@v4
         with:
