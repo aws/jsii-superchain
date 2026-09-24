@@ -32,11 +32,6 @@ jobs:
           # We only add new Node versions to the latest Debian release
           - debian: "trixie" # 13
             node: "26"
-          # We publish bullseye only with Node 20 & 22
-          - debian: "bullseye" # 11
-            node: "20"
-          - debian: "bullseye" # 11
-            node: "22"
     env:
       # Node version whose images will be aliased without the -nodeXX segment
       DEFAULT_NODE_MAJOR_VERSION: 24

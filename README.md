@@ -36,8 +36,6 @@ public.ecr.aws/jsii/superchain:<image-tag>
 | `1-bookworm-slim-node20` | `12` `bookworm` | `20` | `3.11` |
 | `1-bookworm-slim-node22` | `12` `bookworm` | `22` | `3.11` |
 | `1-bookworm-slim-node24` | `12` `bookworm` | `24` | `3.11` |
-| `1-bullseye-slim-node20` | `11` `bullseye` | `20` | `3.9`  |
-| `1-bullseye-slim-node22` | `11` `bullseye` | `22` | `3.9`  |
 
 Any other tags should be *considered* deprecated or in the case of `nightly` images *experimental*.
 
@@ -135,9 +133,9 @@ docker build [...] --build-arg NODE_MAJOR_VERSION=22
 ## Releasing
 
 Changes are not automatically released.
-Instead a new preview images `public.ecr.aws/jsii/superchain:1-bullseye-slim-nightly` is released weekly.
+Instead a new preview images `public.ecr.aws/jsii/superchain:1-bookworm-slim-nightly` is released weekly.
 
-A full release (the `public.ecr.aws/jsii/superchain:1-bullseye-slim` images) is done monthly, or whenever a new release is cut manually.
+A full release (the `public.ecr.aws/jsii/superchain:1-bookworm-slim` images) is done monthly, or whenever a new release is cut manually.
 
 The latest release information (for both of the container image tags) can be seen on the [Amazon ECR Public Gallery](https://gallery.ecr.aws/jsii/superchain).
 
