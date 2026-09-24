@@ -40,18 +40,6 @@ ENV BUILDPLATFORM=${BUILDPLATFORM:-linux/amd64}                                 
 
 ARG DEBIAN_VERSION="trixie"
 
-# Debian 11 "bullseye" reached LTS end-of-life on 2026-08-31, and its security pool is now being
-# purged while the package indexes still advertise the removed files, so deb.debian.org answers 404
-# for packages apt believes exist. archive.debian.org carries no bullseye-security suite at all, so
-# instead we re-enable the snapshot.debian.org sources that the base image already ships (commented
-# out), pinned to the very snapshot the image was built from.
-RUN if [ "${DEBIAN_VERSION}" = "bullseye" ]; then                                                                       \
-  sed -i -e 's|^deb http://deb.debian.org|#deb http://deb.debian.org|'                                                  \
-  -e 's|^# deb http://snapshot.debian.org|deb http://snapshot.debian.org|'                                              \
-  /etc/apt/sources.list                                                                                                 \
-  && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/10-no-check-valid-until;                          \
-  fi
-
 # We require a couple of tools to be available in order to work here...
 RUN apt-get update                                                                                                      \
   && apt-get install -y gpg tar zsh                                                                                     \
@@ -134,16 +122,6 @@ ENV LANG="C.UTF-8"                                                              
   M2="/opt/apache/maven/bin"                                                                                            \
   \
   GOROOT="/opt/golang/go"
-
-# See the comment on the equivalent step in the "bindist" stage: bullseye is EOL and deb.debian.org
-# no longer serves the packages its indexes advertise, so we use the base image's own pinned
-# snapshot.debian.org sources instead.
-RUN if [ "${DEBIAN_VERSION}" = "bullseye" ]; then                                                                       \
-  sed -i -e 's|^deb http://deb.debian.org|#deb http://deb.debian.org|'                                                  \
-  -e 's|^# deb http://snapshot.debian.org|deb http://snapshot.debian.org|'                                              \
-  /etc/apt/sources.list                                                                                                 \
-  && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/10-no-check-valid-until;                          \
-  fi
 
 # Installing the system dependencies we need...
 RUN apt-get update                                                                                                      \
