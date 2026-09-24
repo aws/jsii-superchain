@@ -178,10 +178,16 @@ RUN rustup --version && rustup toolchain list
 # Install Python 3 and pipx
 # Starting in 'bookworm', 'pip install' needs special coercing (and 'apt-get install pipx' would be recommended)
 # but that flag is not recognized yet in older distros.
+# 'pipx' requires 'packaging>=26', while Debian ships an older 'python3-packaging' as a dependency of
+# 'python3-pip'. pip cannot upgrade that copy in-place because Debian's dist-info has no RECORD file
+# ("error: uninstall-no-record-file"), and '--break-system-packages' only permits writing to the
+# system location, not removing a dpkg-managed distribution. Installing the newer 'packaging'
+# alongside it (it shadows the dpkg copy via /usr/local) keeps both pip and dpkg consistent.
 RUN apt-get update                                                                                                      \
   && apt-get -y install python3-dev python3-pip python3-venv                                                            \
   && coercepip='--break-system-packages'                                                                                \
   && if [[ ${DEBIAN_VERSION} == "buster" || ${DEBIAN_VERSION} == "bullseye" ]]; then coercepip=''; fi                   \
+  && python3 -m pip install ${coercepip} --ignore-installed packaging                                                   \
   && python3 -m pip install ${coercepip} pipx "pip>=23.3.1" "setuptools>=68.0.0" "wheel>=0.41.3"                        \
   && rm -rf /var/lib/apt/lists/*
 
